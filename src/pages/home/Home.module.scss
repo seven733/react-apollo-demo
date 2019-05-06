@@ -1,0 +1,51 @@
+@import "src/global.scss";
+
+.home {
+  width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+
+  &List {
+    width: 600px;
+    // border: 1px solid grey;
+  }
+
+  &Search {
+    width: 200px;
+    padding-top: 50px;
+    text-align: right;
+    // border: 1px solid red;
+  }
+}
+
+.query {
+  display: inline-block;
+  width: 150px;
+  margin-right: 0;
+  margin-bottom: 30px;
+
+  input{
+    &:hover :focus :active{
+      border-color: $hoverColor;
+    }
+  }
+}
+
+.tag {
+  padding: 5px;
+
+  &Name {
+    font-size: 14px;
+  }
+
+  &Count {
+    font-size: 12px;
+  }
+
+  &:hover {
+    color: $hoverColor;
+    cursor: pointer;
+  }
+}
+

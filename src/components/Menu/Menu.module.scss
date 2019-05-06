@@ -1,0 +1,20 @@
+@import "src/global.scss";
+
+.menu{
+  text-align: center;
+  padding: 5px 20px;
+}
+
+
+.menuItem{
+  display: inline-block;
+  margin: 0px 20px;
+  font-size: 20px;
+  // color:#95de64;
+  color: $menuColor;
+
+  &:hover {
+    color: $hoverColor;
+    font-size: 21px;
+  }
+}
