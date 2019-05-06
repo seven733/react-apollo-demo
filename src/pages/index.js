@@ -1,19 +1,12 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Layout } from 'antd';
-import { ApolloProvider } from "react-apollo-hooks";
-import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
 import Menu from 'components/Menu/index.js';
 import { Fetching } from 'components/Fetching/index.js';
 import routes from '@/route';
-import './App.css';
-
+import client from '@/client';
 const { Header } = Layout;
-
-// https://api.github.com/graphql
-const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
-});
 
 function App() {
   return (

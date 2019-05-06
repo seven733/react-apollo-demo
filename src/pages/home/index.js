@@ -1,15 +1,16 @@
-import React from 'react';
-import { useApolloClient, useQuery } from "react-apollo-hooks";
+import React, { useEffect, useState } from 'react';
 import { gql } from "apollo-boost";
 import styles from './Home.module.scss';
 import Article from 'components/Article';
 import { Input } from 'antd';
+import { Query }from '@/api/index.js'
+import * as R from 'ramda';
 
 const Search = Input.Search;
 
 const GET_ARTICLES_AND_TAGS = gql`
-  query fetchData($tags: Boolean!) {
-    articleList {
+  query fetchData( $tags: Boolean!, $title: String, $tag: String) {
+    articleList( title: $title, tag: $tag ) {
       totalCount
       articles {
         _id
@@ -19,16 +20,16 @@ const GET_ARTICLES_AND_TAGS = gql`
         description
       }
     }
-    tagStatistics @include(if: $tags) {
+    tags: tagStatistics @include(if: $tags) {
       name
       count
     }
   }
 `;
 
-function Tag ({ data }) {
+function Tag ({ data, onTagClick }) {
   return (
-    <div className={ styles.tag }>
+    <div className={ styles.tag } onClick={() => onTagClick({ tags: false, tag: data.name })}>
       <span className={ styles.tagName }>{ data.name }</span>
       <span className={ styles.tagCount }>({ data.count })</span>
     </div>
@@ -36,31 +37,38 @@ function Tag ({ data }) {
 }
 
 function Home() {
-  const client = useApolloClient();
-  const { data } = useQuery(GET_ARTICLES_AND_TAGS, {
-    suspend: true,
-    variables: { tags: true }
-  });
+  const [ articles, setArticles ] = useState([]);
+  const [ tags, setTags ] = useState([]);
+  const [ query, setQuery ] = useState({ tags: true });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await Query(GET_ARTICLES_AND_TAGS, query);
+      setArticles(data.articleList.articles);
+      if (data.tags) {
+        setTags(data.tags);
+      }
+    };
+
+    fetchData();
+  }, [query]);
 
   return (
     <div className={ styles.home }>
       <div className={ styles.homeList }>
-        { data.articleList.articles.map(item => (<Article key={item._id} data={item} />)) }
+        { articles.map(item => (<Article key={item._id.toString()} data={item} />)) }
       </div>
 
       <div className={ styles.homeSearch }>
         <div className={ styles.query }>
           <Search
             placeholder="请输入文章名称"
-            onSearch={ ()=> client.query({
-              query: GET_ARTICLES_AND_TAGS,
-              variables: { tags: false }
-            })}
+            onSearch={ value => setQuery(R.merge(query, { tags: false, title: value })) }
           />
         </div>
         <div>
           {
-            data.tagStatistics.map(o => (<Tag key={o.name} data={o}></Tag>))
+            tags.map(o => (<Tag key={o.name} data={o} onTagClick={ value => setQuery(R.merge(query, value))}></Tag>))
           }
         </div>
       </div>
