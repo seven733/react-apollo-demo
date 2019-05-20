@@ -4,6 +4,7 @@ module.exports = function override(config, env) {
     extensions: ['.js', '.jsx', '.json', '.scss', '.css'],
     alias: {
       '@': `${__dirname}/src/`,
+      'assert': `${__dirname}/src/assert/`,
       'pages': `${__dirname}/src/pages/`,
       'components': `${__dirname}/src/components/`
     }

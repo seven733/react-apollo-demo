@@ -19,6 +19,8 @@ const GET_ARTICLES_AND_TAGS = gql`
         url
         tags
         description
+        star
+        collect
       }
     }
     tags: tagStatistics @include(if: $tags) {
@@ -28,16 +30,17 @@ const GET_ARTICLES_AND_TAGS = gql`
   }
 `;
 
-function Tag ({ data, onTagClick }) {
+function Tag ({ checkedTag, data, onTagClick }) {
   return (
-    <div className={ styles.tag } onClick={() => onTagClick({ tags: false, tag: data.name })}>
-      <span className={ styles.tagName }>{ data.name }</span>
+    <div className={ styles.tag } onClick={ () => onTagClick({ tags: false, tag: data.name })} style={{ color: checkedTag === data.name ? '#95de64': ''}}>
+      <span className={ styles.tagName } >{ data.name }</span>
       <span className={ styles.tagCount }>({ data.count })</span>
     </div>
   )
 }
 
 function Home() {
+  const [ checkedTag, setCheckedTag ] = useState('');
   const [ articles, setArticles ] = useState([]);
   const [ total, setTotal ] = useState(0);
   const [ tags, setTags ] = useState([]);
@@ -57,6 +60,11 @@ function Home() {
     fetchData();
   }, [query]);
 
+  const clicktag = (val) => {
+    queryChange(val);
+    setCheckedTag(val.tag);
+  }
+
   return (
     <div className={ styles.home }>
       <div className={ styles.homeList }>
@@ -73,7 +81,7 @@ function Home() {
         </div>
         <div>
           {
-            tags.map(o => (<Tag key={o.name} data={o} onTagClick={ value => queryChange(value)}></Tag>))
+            tags.map(o => (<Tag key={o.name} data={o} onTagClick={ value => clicktag(value)} checkedTag={checkedTag}></Tag>))
           }
         </div>
       </div>

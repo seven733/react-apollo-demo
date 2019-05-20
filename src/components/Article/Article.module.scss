@@ -1,4 +1,4 @@
-@import "src/style/global.scss";
+@import "src/assert/style/global.scss";
 
 .article {
   min-height: 100px;
@@ -24,8 +24,30 @@
   }
 
   &Tag {
-    div {
-      margin-right: 15px;
+    margin-right: 10px;
+    display: inline-block;
+  }
+
+  &Action {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #bfbfbf;
+
+    &Icon {
+    }
+    &Count {
+      margin-left: 3px;
+    }
+    &Star {
+      padding: 2px 10px;
+      cursor: pointer;
+    }
+
+    &Collect{
+      margin-left: 5px;
+      padding: 2px 10px;
+      cursor: pointer;
     }
   }
 }
