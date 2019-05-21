@@ -1,17 +1,20 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Layout } from 'antd';
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 import Menu from 'components/Menu/index.js';
-import { Fetching } from 'components/Fetching/index.js';
 import routes from '@/route';
 import client from '@/client';
+import { createStore, StoreProvider } from 'easy-peasy';
+import initStore from '@/store';
 const { Header } = Layout;
+
+const store = createStore(initStore);
 
 function App() {
   return (
-    <Suspense fallback={<Fetching />}>
-      <ApolloProvider client={client}>
+    <StoreProvider store={store}>
+      <ApolloHooksProvider client={client}>
         <Router>
           <Layout style={{ minHeight: '100vh' }}>
             <Header style={{ background: '#fff' }} >
@@ -28,8 +31,8 @@ function App() {
             </div>
           </Layout>
         </Router>
-      </ApolloProvider>
-    </Suspense>
+      </ApolloHooksProvider>
+    </StoreProvider>
   );
 }
 
