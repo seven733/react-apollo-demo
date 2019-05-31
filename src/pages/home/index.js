@@ -36,7 +36,7 @@ const GET_TAGS = gql`
 `;
 
 function Tag ({ checkedTag, data, setCheckedTag }) {
-  const changeQuery = useActions(actions => actions.query.changeQuery);
+  const changeQuery = useActions(actions => actions.query.assign);
   const clickTag = () => {
     changeQuery({ tag: data.name });
     setCheckedTag(data.name);
@@ -58,7 +58,12 @@ function ArticleList({ query, setTotal }) {
   });
 
   if (loading) return <div>loading....</div>;
-  if (error) return <p>{error.message}</p>;
+  if (error) {
+    console.log('err', error)
+    console.log('err', error.message)
+    console.log('err', error.status)
+    return <p>{error.message}</p>;
+  }
   const articles = data.articleList.articles;
   setTotal(data.articleList.totalCount)
 
@@ -87,7 +92,7 @@ function TagList() {
 
 function Home() {
   const query = useStore(state => state.query.data);
-  const changeQuery = useActions(actions => actions.query.changeQuery);
+  const changeQuery = useActions(actions => actions.query.assign);
   const [ total, setTotal ] = useState(0);
 
   return (

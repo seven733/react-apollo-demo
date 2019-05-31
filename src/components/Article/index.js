@@ -2,41 +2,87 @@ import React, { useState } from 'react';
 import { gql } from "apollo-boost";
 import { Tag } from 'antd';
 import styles from './Article.module.scss';
+import { useMutation } from 'react-apollo-hooks';
 
 const STAR_ARTICLE = gql`
   mutation star($id: String!) {
-    starArticle(id: $id)
-  }{
-    success
+    starArticle(id: $id) {
+      success
+    }
   }
 `;
 
+const UNSTAR_ARTICLE = gql`
+  mutation unstar($id: String!) {
+    unstarArticle(id: $id) {
+      success
+    }
+  }
+`;
 
-function Article (props) {
-  const { data }= props;
+const COLLECT_ARTICLE = gql`
+  mutation collect($id: String!) {
+    collectArticle(id: $id) {
+      success
+    }
+  }
+`;
+
+const CANCEL_COLLECT_ARTICLE = gql`
+  mutation cancelCollect($id: String!) {
+    cancelCollectArticle(id: $id) {
+      success
+    }
+  }
+`;
+
+function Article ({ data }) {
   const [ starCount, setStarCount ]= useState(data.star || 0);
   const [ collectCount, setCollectCount ]= useState(data.collect || 0);
   const [ starred, setStar ] = useState(false);
   const [ collected, setCollected ] = useState(false);
 
+  const star = useMutation(STAR_ARTICLE, { variables: { id: data._id } });
+  const unstar = useMutation(UNSTAR_ARTICLE, { variables: { id: data._id } });
+  const collect = useMutation(COLLECT_ARTICLE, { variables: { id: data._id } });
+  const cancelCollect = useMutation(CANCEL_COLLECT_ARTICLE, { variables: { id: data._id } });
+
   async function clickStar() {
+    star();
     setStarCount(starCount + 1);
     setStar(!starred);
   }
 
-  function unstar() {
+  function clickUnstar() {
+    unstar();
     setStarCount(starCount - 1);
     setStar(!starred);
   }
 
   function clickCollect() {
+    collect();
     setCollectCount(collectCount + 1);
     setCollected(!collected);
   }
 
-  function cancelCollect() {
+  function clickCancelCollect() {
+    cancelCollect();
     setCollectCount(collectCount - 1);
     setCollected(!collected);
+  }
+
+  const starProps = {
+    onClick: starred ? clickUnstar: clickStar,
+    style: {
+      color: starred ? "#fadb14" : "#bfbfbf"
+    }
+  }
+
+  const collectProps = {
+    onClick: collected ? clickCancelCollect: clickCollect,
+    style: {
+      color: collected ? "#fadb14" : "#bfbfbf"
+    }
   }
 
   return (
@@ -52,17 +98,11 @@ function Article (props) {
       </div>
       <div className={ styles.articleAction }>
         <span className={ styles.articleActionStar }>
-          <i className={ styles.articleActionIcon + " iconfont" }
-            onClick={() => starred ? unstar() : clickStar()}
-            style={{ color: starred ? "#fadb14" : "#bfbfbf" }}
-          >&#xe664;</i>
+          <i className={ styles.articleActionIcon + " iconfont" } {...starProps}>&#xe664;</i>
           <span className={ styles.articleActionCount }>{ starCount }</span>
         </span>
         <span className={ styles.articleActionCollect }>
-          <i className={ styles.articleActionIcon + " iconfont" }
-            onClick={() => collected ? cancelCollect() : clickCollect()}
-            style={{ color: collected ? "#fadb14" : "#bfbfbf" }}
-          >&#xe61a;</i>
+          <i className={ styles.articleActionIcon + " iconfont" } {...collectProps}>&#xe61a;</i>
           <span className={ styles.articleActionCount }>{ collectCount }</span>
         </span>
       </div>

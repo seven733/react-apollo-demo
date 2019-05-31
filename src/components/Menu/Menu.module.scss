@@ -3,6 +3,8 @@
 .menu{
   text-align: center;
   padding: 5px 20px;
+  position: relative;
+  z-index: 1001;
 }
 
 .menuItem{
@@ -16,4 +18,23 @@
     color: $hoverColor;
     font-size: 21px;
   }
+}
+
+
+.menuUser {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  span{
+    margin-right: 5px;
+    cursor: pointer;
+  }
+}
+
+.menuLogin{
+  position: absolute;
+  top: 0;
+  right: 0;
 }
