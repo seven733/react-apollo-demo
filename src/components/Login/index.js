@@ -11,8 +11,7 @@ function Modal ({ onClose }) {
   const setUser = useActions(actions => actions.user.set);
 
   async function login() {
-    let res = await Api.login({ username, password });
-    console.log('res', res)
+    const res = await Api.login({ username, password });
     if (res.success) {
       onClose();
       message.success('登录成功');

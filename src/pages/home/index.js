@@ -59,9 +59,6 @@ function ArticleList({ query, setTotal }) {
 
   if (loading) return <div>loading....</div>;
   if (error) {
-    console.log('err', error)
-    console.log('err', error.message)
-    console.log('err', error.status)
     return <p>{error.message}</p>;
   }
   const articles = data.articleList.articles;

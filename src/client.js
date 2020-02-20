@@ -1,6 +1,18 @@
-import ApolloClient from "apollo-boost";
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
-// https://api.github.com/graphql
+import { createHttpLink } from "apollo-link-http";
+import { onError } from "apollo-link-error";
+
+const httpLink = createHttpLink({ uri: "/graphql" });
+const errorLink = onError(({ networkError }) => {
+  if (networkError.statusCode === 401) {
+    alert('404')
+  }
+});
+
+const link = errorLink.concat(httpLink);
 export default new ApolloClient({
-  uri: "/graphql"
+  link,
+  cache: new InMemoryCache()
 });
